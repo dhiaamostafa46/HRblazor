@@ -1,0 +1,74 @@
+﻿@page "/leavetypes"
+@using HR.Models
+@using HR.Services
+@inject LeaveTypeService LeaveTypeService
+@inject NavigationManager NavigationManager
+
+<h3>Leave Types</h3>
+
+<!-- Add link to add page -->
+<a href="/leavetypes/add" class="btn btn-primary">Add Leave Type</a>
+
+@if (leaveTypes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (leaveTypes.Count == 0)
+{
+    <p>No leave types available.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Type Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var leaveType in leaveTypes)
+            {
+                <tr>
+                    <td>@leaveType.TypeName</td>
+                    <td>
+                        <a class="btn btn-info" href="/leavetypes/show/@leaveType.LeaveTypeId">View</a>
+                        <a class="btn btn-primary" href="/leavetypes/edit/@leaveType.LeaveTypeId">Edit</a>
+                         <button class="btn btn-danger" onclick="@(async () => await DeleteLeaveType(leaveType))">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<LeaveType> leaveTypes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            leaveTypes = await LeaveTypeService.GetAllLeaveTypesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading leave types: {ex.Message}");
+        }
+    }
+
+    private  async Task DeleteLeaveType(LeaveType leaveType)
+    {
+        try
+        {
+            await LeaveTypeService.DeleteLeaveTypeAsync(leaveType.LeaveTypeId);
+            leaveTypes.Remove(leaveType);
+            StateHasChanged();
+            // leaveTypes = await LeaveTypeService.GetAllLeaveTypesAsync(); // Refresh the list after deletion
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting leave type with ID {leaveType.LeaveTypeId}: {ex.Message}");
+        }
+    }
+}

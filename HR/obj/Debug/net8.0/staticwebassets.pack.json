@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\HR\\HR\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\HR.bundle.scp.css",
+      "PackagePath": "staticwebassets\\HR.bundle.scp.css"
+    },
+    {
+      "Id": "D:\\HR\\HR\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "D:\\HR\\HR\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "D:\\HR\\HR\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "D:\\HR\\HR\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "D:\\HR\\HR\\wwwroot\\pdfs\\employees_table_638612651989839119.pdf",
+      "PackagePath": "staticwebassets\\pdfs\\employees_table_638612651989839119.pdf"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.HR.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.HR.props",
+      "PackagePath": "build\\HR.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.HR.props",
+      "PackagePath": "buildMultiTargeting\\HR.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.HR.props",
+      "PackagePath": "buildTransitive\\HR.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

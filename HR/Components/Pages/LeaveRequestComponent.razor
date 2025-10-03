@@ -1,0 +1,80 @@
+﻿@page "/leaverequests"
+@using HR.Models
+@using HR.Services
+@inject LeaveRequestService LeaveRequestService
+@inject NavigationManager NavigationManager
+
+<h3>Leave Requests</h3>
+
+<!-- Add link to add page -->
+<a href="/leaverequests/add" class="btn btn-primary">Add Leave Request</a>
+
+@if (leaveRequests == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (leaveRequests.Count == 0)
+{
+    <p>No leave requests available.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Leave Type</th>
+                <th>From Date</th>
+                <th>To Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var leaveRequest in leaveRequests)
+            {
+                <tr>
+                    <td>@leaveRequest.Employee?.Name</td>
+                    <td>@leaveRequest.LeaveType?.TypeName</td>
+                    <td>@leaveRequest.StartDate.ToShortDateString()</td>
+                    <td>@leaveRequest.EndDate.ToShortDateString()</td>
+                    <td>
+                        <a class="btn btn-info" href="/leaverequests/show/@leaveRequest.LeaveRequestId">View</a>
+                        <a class="btn btn-primary" href="/leaverequests/edit/@leaveRequest.LeaveRequestId">Edit</a>
+                        <button class="btn btn-danger" @onclick="() => DeleteLeaveRequest(leaveRequest.LeaveRequestId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<LeaveRequest> leaveRequests;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            leaveRequests = await LeaveRequestService.GetAllLeaveRequestsAsync();
+        }
+        catch (Exception ex)
+        {
+            // Handle exception or log error
+            Console.WriteLine($"Error loading leave requests: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteLeaveRequest(int id)
+    {
+        try
+        {
+            await LeaveRequestService.DeleteLeaveRequestAsync(id);
+            leaveRequests = await LeaveRequestService.GetAllLeaveRequestsAsync();
+        }
+        catch (Exception ex)
+        {
+            // Handle exception or log error
+            Console.WriteLine($"Error deleting leave request: {ex.Message}");
+        }
+    }
+}

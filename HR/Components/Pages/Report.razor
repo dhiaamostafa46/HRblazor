@@ -1,0 +1,64 @@
+﻿@page "/report"
+@using HR.Models
+@using HR.Services
+@inject EmployeeService EmployeeService
+@inject IReportService ReportService
+
+<h3>Generate PDF Report</h3>
+
+<button class="btn btn-success" @onclick="GenerateReport">Generate PDF</button>
+
+@if (employees == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Job Number</th>
+                <th>Mobile Number</th>
+                <th>Number of Leave Requests</th>
+                <th>Last Leave Date</th>
+                <th>Last Leave Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>@employee.Name</td>
+                    <td>@employee.EmployeeId</td>
+                    <td>@employee.MobileNumber</td>
+                    <td>@employee?.LeaveRequests?.Count()</td>
+                    <td>@employee?.LeaveRequests?.Last()?.StartDate</td>
+                    <td>@employee?.LeaveRequests?.Last()?.LeaveType.TypeName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Employee> employees;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            employees = await EmployeeService.GetAllWithRequestsAsync();
+        }
+        catch (Exception ex)
+        {
+            // Handle exception or display error message
+            Console.WriteLine($"Error loading employees: {ex.Message}");
+        }
+    }
+    private async Task GenerateReport()
+    {
+        var url = await ReportService.GeneratePdfReportAsync(employees);
+
+    }
+}

@@ -1,0 +1,85 @@
+﻿@page "/employees"
+@using HR.Models
+@using HR.Services
+@using System.Collections.ObjectModel
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+<h3>Employees</h3>
+
+<!-- Add link to add page -->
+<a href="/employees/add" class="btn btn-primary">Add Employee</a>
+
+@if (employees == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Job Number</th>
+                <th>Mobile Number</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>@employee.Name</td>
+                    <td>@employee.JobNumber</td>
+                    <td>@employee.MobileNumber</td>
+                    <td>@employee.Address</td>
+                    <td>
+                        <a class="btn btn-info" href="/employees/show/@employee.EmployeeId">View</a>
+                        <a class="btn btn-primary" href="/employees/edit/@employee.EmployeeId">Edit</a>
+                        <button class="btn btn-danger" @onclick="() => DeleteEmployee(employee.EmployeeId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Employee> employees;
+    // private ObservableCollection<Employee> employeesView;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // employeesView =new ObservableCollection<Employee>();
+
+             employees = await EmployeeService.GetAllEmployeesAsync();
+            // foreach(var item in employees)
+            // {
+            //     employeesView?.Add(item);
+            //     StateHasChanged();
+            // }
+        }
+        catch (Exception ex)
+        {
+            // Handle exception or display error message
+            Console.WriteLine($"Error loading employees: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteEmployee(int id)
+    {
+        try
+        {
+            await EmployeeService.DeleteEmployeeAsync(id);
+            employees = await EmployeeService.GetAllEmployeesAsync(); // Refresh the list
+        }
+        catch (Exception ex)
+        {
+            // Handle exception or display error message
+            Console.WriteLine($"Error deleting employee: {ex.Message}");
+        }
+    }
+}

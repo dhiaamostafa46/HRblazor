@@ -1,0 +1,42 @@
+﻿@page "/employees/show/{Id:int}"
+@using HR.Models
+@using HR.Services
+@inject EmployeeService EmployeeService
+
+<h3>Employee Details</h3>
+
+@if (employee == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">@employee.Name</dd>
+
+        <dt class="col-sm-3">Job Number</dt>
+        <dd class="col-sm-9">@employee.JobNumber</dd>
+
+        <dt class="col-sm-3">Mobile Number</dt>
+        <dd class="col-sm-9">@employee.MobileNumber</dd>
+
+        <dt class="col-sm-3">Address</dt>
+        <dd class="col-sm-9">@employee.Address</dd>
+
+        <dt class="col-sm-3">Notes</dt>
+        <dd class="col-sm-9">@employee.Notes</dd>
+    </dl>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Employee employee;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employee = await EmployeeService.GetEmployeeByIdAsync(Id);
+    }
+}

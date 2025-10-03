@@ -1,0 +1,31 @@
+﻿@page "/leavetypes/show/{Id:int}"
+@inject LeaveTypeService LeaveTypeService
+@using HR.Models
+@using HR.Services
+
+<h3>Leave Type Details</h3>
+
+@if (leaveType == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">Type Name</dt> <!-- Updated label to match the new property name -->
+        <dd class="col-sm-9">@leaveType.TypeName</dd> <!-- Updated to TypeName -->
+        <!-- Add any other relevant details here -->
+    </dl>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private LeaveType leaveType;
+
+    protected override async Task OnInitializedAsync()
+    {
+        leaveType = await LeaveTypeService.GetLeaveTypeByIdAsync(Id);
+    }
+}

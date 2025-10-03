@@ -1,0 +1,73 @@
+﻿@page "/employees/edit/{Id:int}"
+@using HR.Models
+@using HR.Services
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Employee</h3>
+
+<EditForm Model="@employee" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="employee.Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="jobNumber">Job Number</label>
+        <InputText id="jobNumber" class="form-control" @bind-Value="employee.JobNumber" />
+    </div>
+
+    <div class="form-group">
+        <label for="mobileNumber">Mobile Number</label>
+        <InputText id="mobileNumber" class="form-control" @bind-Value="employee.MobileNumber" />
+    </div>
+
+    <div class="form-group">
+        <label for="address">Address</label>
+        <InputText id="address" class="form-control" @bind-Value="employee.Address" />
+    </div>
+
+    <div class="form-group">
+        <label for="notes">Notes</label>
+        <InputText id="notes" class="form-control" @bind-Value="employee.Notes" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Employee employee;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            employee = await EmployeeService.GetEmployeeByIdAsync(Id);
+        }
+        catch (Exception ex)
+        {
+            // Handle exception or display error message
+            Console.WriteLine($"Error loading employee: {ex.Message}");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await EmployeeService.UpdateEmployeeAsync(employee);
+            NavigationManager.NavigateTo("/employees");
+        }
+        catch (Exception ex)
+        {
+            // Handle exception or display error message
+            Console.WriteLine($"Error updating employee: {ex.Message}");
+        }
+    }
+}

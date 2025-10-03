@@ -1,0 +1,69 @@
+﻿@page "/leaverequests/edit/{Id:int}"
+@using HR.Models
+@using HR.Services
+@inject LeaveRequestService LeaveRequestService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Leave Request</h3>
+
+<EditForm Model="@leaveRequest" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="employeeId">Employee ID</label>
+        <InputNumber id="employeeId" class="form-control" @bind-Value="leaveRequest.EmployeeId" />
+        <!-- Consider using a dropdown to select an employee if you have a list -->
+    </div>
+
+    <div class="form-group">
+        <label for="leaveTypeId">Leave Type ID</label>
+        <InputNumber id="leaveTypeId" class="form-control" @bind-Value="leaveRequest.LeaveTypeId" />
+        <!-- Consider using a dropdown to select a leave type if you have a list -->
+    </div>
+
+    <div class="form-group">
+        <label for="startDate">From Date</label>
+        <InputDate id="startDate" class="form-control" @bind-Value="leaveRequest.StartDate" />
+    </div>
+
+    <div class="form-group">
+        <label for="endDate">To Date</label>
+        <InputDate id="endDate" class="form-control" @bind-Value="leaveRequest.EndDate" />
+    </div>
+
+    <div class="form-group">
+        <label for="reason">Reason</label>
+        <InputText id="reason" class="form-control" @bind-Value="leaveRequest.Reason" />
+    </div>
+
+    <div class="form-group">
+        <label for="notes">Notes</label>
+        <InputText id="notes" class="form-control" @bind-Value="leaveRequest.Notes" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private LeaveRequest leaveRequest;
+
+    protected override async Task OnInitializedAsync()
+    {
+        leaveRequest = await LeaveRequestService.GetLeaveRequestByIdAsync(Id);
+        if (leaveRequest == null)
+        {
+            // Handle the case where the leave request is not found
+            NavigationManager.NavigateTo("/leaverequests");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await LeaveRequestService.UpdateLeaveRequestAsync(leaveRequest);
+        NavigationManager.NavigateTo("/leaverequests");
+    }
+}

@@ -1,0 +1,45 @@
+﻿@page "/leaverequests/show/{Id:int}"
+@using HR.Models
+@using HR.Services
+@inject LeaveRequestService LeaveRequestService
+
+<h3>Leave Request Details</h3>
+
+@if (leaveRequest == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">Employee</dt>
+        <dd class="col-sm-9">@leaveRequest.Employee?.Name</dd>  <!-- Display employee name -->
+
+        <dt class="col-sm-3">Leave Type</dt>
+        <dd class="col-sm-9">@leaveRequest.LeaveType?.TypeName</dd>  <!-- Display leave type name -->
+
+        <dt class="col-sm-3">From Date</dt>
+        <dd class="col-sm-9">@leaveRequest.StartDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">To Date</dt>
+        <dd class="col-sm-9">@leaveRequest.EndDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Reason</dt>
+        <dd class="col-sm-9">@leaveRequest.Reason</dd>
+
+        <dt class="col-sm-3">Notes</dt>
+        <dd class="col-sm-9">@leaveRequest.Notes</dd>
+    </dl>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private LeaveRequest leaveRequest;
+
+    protected override async Task OnInitializedAsync()
+    {
+        leaveRequest = await LeaveRequestService.GetLeaveRequestByIdAsync(Id);
+    }
+}

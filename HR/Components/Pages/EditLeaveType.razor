@@ -1,0 +1,51 @@
+﻿@page "/leavetypes/edit/{Id:int}"
+@using HR.Models
+@using HR.Services
+@inject LeaveTypeService LeaveTypeService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Leave Type</h3>
+
+@if (leaveType is not null)
+{
+    <EditForm Model="leaveType" OnValidSubmit="HandleValidSubmit" FormName="editLeaveTypeForm">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="typeName">Type Name</label>
+            <InputText id="typeName" class="form-control" @bind-Value="leaveType!.TypeName" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </EditForm>
+}
+
+@code {
+    // private EditContext? editContext;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private LeaveType leaveType { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        leaveType ??= await LeaveTypeService.GetLeaveTypeByIdAsync(Id);
+        if (leaveType == null)
+        {
+            //Handle the case where leaveType is not found
+            NavigationManager.NavigateTo("/leavetypes");
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        leaveType.LeaveTypeId = Id;
+        await LeaveTypeService.UpdateLeaveTypeAsync(leaveType);
+        NavigationManager.NavigateTo("/leavetypes");
+    }
+}

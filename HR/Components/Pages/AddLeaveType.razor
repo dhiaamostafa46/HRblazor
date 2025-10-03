@@ -1,0 +1,40 @@
+﻿@page "/leavetypes/add"
+@using HR.Models
+@using HR.Services
+@inject LeaveTypeService LeaveTypeService
+@inject NavigationManager NavigationManager
+
+
+<h3>Add Leave Type</h3>
+
+<EditForm Model="@newLeaveType" OnValidSubmit="HandleValidSubmit" FormName="addLeaveTypeForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="TypeName">Type Name</label>
+        <InputText id="TypeName" class="form-control" @bind-Value="newLeaveType.TypeName" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private LeaveType? newLeaveType { get; set; }
+
+    protected override void OnInitialized() => newLeaveType ??= new();
+
+    private async Task HandleValidSubmit()
+    {
+
+        Console.WriteLine($"TypeName: {newLeaveType.TypeName}");
+     
+        await LeaveTypeService.AddLeaveTypeAsync(newLeaveType);
+        NavigationManager.NavigateTo("/leavetypes");
+    }
+
+
+
+   
+}

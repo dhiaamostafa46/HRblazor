@@ -1,0 +1,71 @@
+﻿@page "/employees/add"
+@using HR.Models
+@using HR.Services
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+<h3>Add Employee</h3>
+
+<EditForm Model="@newEmployee" OnValidSubmit="HandleValidSubmit" FormName="addEmployeeForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+   
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="newEmployee.Name" />
+        <ValidationMessage For="@(() => newEmployee.Name)" />
+    </div>
+
+    <div class="form-group">
+        <label for="jobNumber">Job Number</label>
+        <InputText id="jobNumber" class="form-control" @bind-Value="newEmployee.JobNumber" />
+    </div>
+
+    <div class="form-group">
+        <label for="mobileNumber">Mobile Number</label>
+        <InputText id="mobileNumber" class="form-control" @bind-Value="newEmployee.MobileNumber" />
+    </div>
+
+    <div class="form-group">
+        <label for="address">Address</label>
+        <InputText id="address" class="form-control" @bind-Value="newEmployee.Address" />
+    </div>
+
+    <div class="form-group">
+        <label for="notes">Notes</label>
+        <InputText id="notes" class="form-control" @bind-Value="newEmployee.Notes" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+</EditForm>
+
+
+@code {
+
+
+    [SupplyParameterFromForm]
+    private Employee? newEmployee { get; set; }
+
+    protected override void OnInitialized() => newEmployee ??= new();
+
+   
+
+    private async Task HandleValidSubmit()
+    {
+        // try
+        // {
+            
+            await EmployeeService.AddEmployeeAsync(newEmployee);
+            NavigationManager.NavigateTo("/employees");
+         
+           
+       // }
+        // catch (Exception ex)
+        // {
+        //     Handle exception or display error message
+        //     Console.WriteLine($"Error adding employee: {ex.Message}");
+        // }
+    }
+}

@@ -1,0 +1,90 @@
+﻿@page "/leaverequests/add"
+@using HR.Models
+@using HR.Services
+@inject LeaveRequestService LeaveRequestService
+@inject EmployeeService EmployeeService
+@inject LeaveTypeService LeaveTypeService
+@inject NavigationManager NavigationManager
+
+<h3>Add Leave Request</h3>
+
+<EditForm Model="@newLeaveRequest" OnValidSubmit="HandleValidSubmit" FormName="addLeaveRequestForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="EmployeeId">Employee</label>
+        <InputSelect id="EmployeeId" class="form-control" @bind-Value="newLeaveRequest!.EmployeeId">
+            <option value="0">Select an Employee</option>
+            @foreach (var employee in employees)
+            {
+                <option value="@employee.EmployeeId">@employee.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <label for="leaveTypeId">Leave Type</label>
+        <InputSelect id="leaveTypeId" class="form-control" @bind-Value="newLeaveRequest.LeaveTypeId">
+            <option value="0">Select a Leave Type</option>
+            @foreach (var leaveType in leaveTypes)
+            {
+                <option value="@leaveType.LeaveTypeId">@leaveType.TypeName</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <label for="startDate">From Date</label>
+        <InputDate id="startDate" class="form-control" @bind-Value="newLeaveRequest.StartDate" />
+    </div>
+
+    <div class="form-group">
+        <label for="endDate">To Date</label>
+        <InputDate id="endDate" class="form-control" @bind-Value="newLeaveRequest.EndDate" />
+    </div>
+
+    <div class="form-group">
+        <label for="reason">Reason</label>
+        <InputText id="reason" class="form-control" @bind-Value="newLeaveRequest.Reason" />
+    </div>
+
+    <div class="form-group">
+        <label for="notes">Notes</label>
+        <InputText id="notes" class="form-control" @bind-Value="newLeaveRequest.Notes" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+</EditForm>
+
+@code {
+  
+
+    [SupplyParameterFromForm]
+    private LeaveRequest? newLeaveRequest { get; set; }
+
+    protected override void OnInitialized() => newLeaveRequest ??= new();
+
+    private List<Employee> employees = new List<Employee>();
+    private List<LeaveType> leaveTypes = new List<LeaveType>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        employees = await EmployeeService.GetAllEmployeesAsync(); // Fetch all employees
+        leaveTypes = await LeaveTypeService.GetAllLeaveTypesAsync(); // Fetch all leave types
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        // Validation checks before submission
+        if (newLeaveRequest.EmployeeId == 0 || newLeaveRequest.LeaveTypeId == 0)
+        {
+            // Handle validation errors as necessary
+            Console.WriteLine("Employee and Leave Type must be selected.");
+            return;
+        }
+
+        await LeaveRequestService.AddLeaveRequestAsync(newLeaveRequest);
+        NavigationManager.NavigateTo("/leaverequests");
+    }
+}
